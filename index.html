@@ -1,37 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>台灣天氣比較</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css">
-<meta name="theme-color" content="#0A84FF">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>天氣比較</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header class="app-header">
-  <div class="title">🌤 台灣天氣</div>
-  <div class="sub">第一來源：中央氣象局｜第二來源：Open-Meteo</div>
-</header>
 
-<main class="container">
-  <section class="card">
-    <label>城市（逗號或換行）</label>
-    <textarea id="citiesInput" rows="3">新竹縣竹北市, 台北市, 台中市, 高雄市</textarea>
-    <button id="loadBtn">查詢（N+2 起）</button>
-  </section>
+<h1>🌤 天氣比較（N+2 起）</h1>
 
-  <section class="segmented card">
-    <button class="seg active" data-period="morning">早上</button>
-    <button class="seg" data-period="afternoon">下午</button>
-    <button class="seg" data-period="night">晚上</button>
-  </section>
+<textarea id="cities" placeholder="輸入城市，一行一個">竹北
+台中
+台北
+高雄</textarea>
 
-  <div id="status" class="status"></div>
-  <div id="result"></div>
-</main>
+<div class="controls">
+  <button data-period="morning" class="active">早上</button>
+  <button data-period="afternoon">下午</button>
+  <button data-period="night">晚上</button>
+</div>
+
+<div id="cards"></div>
 
 <script src="app.js"></script>
 </body>
