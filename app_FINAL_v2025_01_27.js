@@ -5,7 +5,7 @@
 // - 明天 / 後天 / 大後天（N+1 / N+2 / N+3）
 // - 多城市比較
 // - 已綁定 Worker
-
+alert("DEBUG: app.js loaded v-final");
 console.log("LOAD app.js FINAL v2025-01-27-REV3");
 
 const WORKER_BASE = "https://wheather.bryanliu-cs.workers.dev";
