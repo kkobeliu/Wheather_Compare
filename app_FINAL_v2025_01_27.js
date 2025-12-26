@@ -85,6 +85,7 @@ async function load(){
       try{
         const res = await fetch(`${WORKER_BASE}/cwa?city=${encodeURIComponent(city)}`);
         const data = await res.json();
+        console.log("DEBUG raw data for", city, data);
         const elements = getWeatherElements(data);
         text = tempRangeForDay(elements, d);
       }catch(e){
