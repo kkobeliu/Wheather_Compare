@@ -1,5 +1,5 @@
 {
-  "name": "台灣天氣",
+  "name": "台灣天氣比較",
   "short_name": "天氣",
   "start_url": "./index.html",
   "display": "standalone",
