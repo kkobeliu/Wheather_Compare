@@ -64,7 +64,7 @@ async function load() {
         const res = await fetch(`${WORKER_BASE}/cwa?city=${encodeURIComponent(city)}`);
         const data = await res.json();
         const elements = getWeatherElements(data);
-
+        console.log("RAW weatherElement", elements);
         if (elements) {
           const minEl = pickElement(elements, ["MinTemperature","MinT"]);
           const maxEl = pickElement(elements, ["MaxTemperature","MaxT"]);
