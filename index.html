@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>台灣天氣</title>
+<title>台灣天氣（CWA + Open-Meteo）</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="styles.css">
 <meta name="theme-color" content="#0A84FF">
@@ -13,14 +13,14 @@
 <body>
 <header class="app-header">
   <div class="title">🌤 台灣天氣</div>
-  <div class="sub">Open-Meteo｜起始日 N+2｜早/午/晚</div>
+  <div class="sub">第一來源：中央氣象局｜第二來源：Open-Meteo</div>
 </header>
 
 <main class="container">
   <section class="card">
-    <label>城市清單（逗號分隔）</label>
-    <input id="citiesInput" type="text" placeholder="新竹縣竹北市, 台北市, 高雄市">
-    <button id="loadBtn">查詢天氣</button>
+    <label>城市（逗號或換行）</label>
+    <textarea id="citiesInput" rows="3">新竹縣竹北市</textarea>
+    <button id="loadBtn">查詢（起始日 N+2）</button>
   </section>
 
   <section class="segmented card">
