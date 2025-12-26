@@ -1,30 +1,17 @@
-// app.js - 修正版（明天 / 後天 / 大後天，依 startTime 對齊）
-// 已綁定指定 Worker
+// app.js - 最終穩定版（CWA 縣市資料：MinT / MaxT）
+// 功能：
+// - 比較多個城市
+// - 明天 / 後天 / 大後天（N+1 / N+2 / N+3）
+// - 顯示每日最低 ~ 最高溫（一定有數字，只要 CWA 有資料）
+// - 已綁定 Worker
 
 const WORKER_BASE = "https://wheather.bryanliu-cs.workers.dev";
 
-const PERIOD_HOURS = {
-  morning: [6, 7, 8, 9, 10, 11],
-  afternoon: [12, 13, 14, 15, 16, 17],
-  night: [18, 19, 20, 21, 22, 23]
-};
-
-let currentPeriod = "morning";
-
-document.querySelectorAll(".controls button").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".controls button")
-      .forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentPeriod = btn.dataset.period;
-    load();
-  };
-});
-
+// ===== 工具函式 =====
 function dayPlus(n) {
   const d = new Date();
   d.setDate(d.getDate() + n);
-  d.setHours(0,0,0,0);
+  d.setHours(0, 0, 0, 0);
   return d;
 }
 
@@ -39,25 +26,28 @@ function sameDay(a, b) {
     && a.getDate() === b.getDate();
 }
 
-function avgTempForDay(weatherElements, targetDate, period) {
-  const t = weatherElements.find(e => e.elementName === "T");
-  if (!t) return "—";
+// 取 CWA 縣市資料的 MinT / MaxT
+function tempRangeForDay(weatherElements, targetDate) {
+  if (!weatherElements) return "—";
 
-  const hours = PERIOD_HOURS[period];
+  const minT = weatherElements.find(e => e.elementName === "MinT");
+  const maxT = weatherElements.find(e => e.elementName === "MaxT");
+  if (!minT || !maxT) return "—";
 
-  const temps = t.time
-    .filter(x => {
-      const d = new Date(x.startTime);
-      return sameDay(d, targetDate) && hours.includes(d.getHours());
-    })
-    .map(x => Number(x.elementValue[0].value))
-    .filter(v => !isNaN(v));
+  const min = minT.time.find(x =>
+    sameDay(new Date(x.startTime), targetDate)
+  )?.elementValue?.[0]?.value;
 
-  if (temps.length === 0) return "—";
+  const max = maxT.time.find(x =>
+    sameDay(new Date(x.startTime), targetDate)
+  )?.elementValue?.[0]?.value;
 
-  return Math.round(temps.reduce((a, b) => a + b, 0) / temps.length);
+  if (min == null || max == null) return "—";
+
+  return `${Math.round(Number(min))} ~ ${Math.round(Number(max))}`;
 }
 
+// ===== 主載入 =====
 async function load() {
   const cities = document
     .getElementById("cities")
@@ -75,7 +65,7 @@ async function load() {
   for (const d of days) {
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `<h3>📅 ${formatDate(d)}｜${periodLabel()}</h3>`;
+    card.innerHTML = `<h3>📅 ${formatDate(d)}</h3>`;
 
     for (const city of cities) {
       try {
@@ -86,17 +76,18 @@ async function load() {
 
         let weatherElements = null;
 
-        if (data.records.locations) {
+        // 縣市 dataset（F-D0047-xxx）
+        if (data?.records?.locations?.[0]?.location?.[0]?.weatherElement) {
           weatherElements =
             data.records.locations[0].location[0].weatherElement;
-        } else if (data.records.location) {
+        }
+        // 相容：舊鄉鎮 dataset
+        else if (data?.records?.location?.[0]?.weatherElement) {
           weatherElements =
             data.records.location[0].weatherElement;
         }
 
-        const temp = weatherElements
-          ? avgTempForDay(weatherElements, d, currentPeriod)
-          : "—";
+        const temp = tempRangeForDay(weatherElements, d);
 
         const row = document.createElement("div");
         row.className = "row";
@@ -115,9 +106,9 @@ async function load() {
   }
 }
 
-function periodLabel() {
-  return currentPeriod === "morning" ? "早上" :
-         currentPeriod === "afternoon" ? "下午" : "晚上";
-}
+// ===== 綁定查詢按鈕（若存在） =====
+const btn = document.getElementById("queryBtn");
+if (btn) btn.addEventListener("click", load);
 
+// 首次自動載入
 load();
