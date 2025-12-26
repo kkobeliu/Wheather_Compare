@@ -61,7 +61,7 @@ async function load() {
     for (const city of cities) {
       let text = "—";
       try {
-        const res = await fetch(`${WORKER_BASE}/cwa?city=${encodeURIComponent(city)}`);
+        const res = await fetch(`${WORKER_BASE}/cwa?city=${encodeURIComponent(city)}&_=${Date.now()}`);
         const data = await res.json();
         const elements = getWeatherElements(data);
         console.log("RAW weatherElement", elements);
