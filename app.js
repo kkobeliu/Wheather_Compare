@@ -54,10 +54,29 @@ async function load() {
         );
         const data = await res.json();
 
-        const loc = data.records.location[0];
-        const temp = loc.weatherElement
-          .find(e => e.elementName === "T")
-          ?.time[0]?.elementValue[0]?.value ?? "—";
+        // ✅ 同時支援「縣市」與「鄉鎮」結構
+        let weatherElements = null;
+
+        // 縣市 dataset
+        if (data.records.locations) {
+          weatherElements =
+            data.records.locations[0].location[0].weatherElement;
+        }
+        // 鄉鎮 dataset（保留相容）
+        else if (data.records.location) {
+          weatherElements =
+            data.records.location[0].weatherElement;
+        }
+
+        let temp = "—";
+
+        if (weatherElements) {
+          const t = weatherElements.find(e => e.elementName === "T");
+          if (t && t.time && t.time.length > 0) {
+            temp = t.time[0].elementValue[0].value;
+          }
+        }
+
 
         const row = document.createElement("div");
         row.className = "row";
