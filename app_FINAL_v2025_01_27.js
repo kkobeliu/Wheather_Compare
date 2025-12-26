@@ -41,18 +41,28 @@ function getWeatherElements(data){
 function tempRangeForDay(weatherElements, targetDate){
   if(!weatherElements) return "—";
 
-  const minT = weatherElements.find(e => e.elementName === "MinT");
-  const maxT = weatherElements.find(e => e.elementName === "MaxT");
+  const minT = weatherElements.find(e =>
+    e.elementName === "MinT" || e.elementName === "MinTemperature"
+  );
+  const maxT = weatherElements.find(e =>
+    e.elementName === "MaxT" || e.elementName === "MaxTemperature"
+  );
+
   if(!minT || !maxT) return "—";
 
-  const min = minT.time.find(t => sameDay(new Date(t.startTime), targetDate))
-              ?.elementValue?.[0]?.value;
-  const max = maxT.time.find(t => sameDay(new Date(t.startTime), targetDate))
-              ?.elementValue?.[0]?.value;
+  const min = minT.time.find(t =>
+    sameDay(new Date(t.startTime), targetDate)
+  )?.elementValue?.[0]?.value;
 
-  if(min==null || max==null) return "—";
-  return `${Math.round(min)} ~ ${Math.round(max)}`;
+  const max = maxT.time.find(t =>
+    sameDay(new Date(t.startTime), targetDate)
+  )?.elementValue?.[0]?.value;
+
+  if(min == null || max == null) return "—";
+
+  return `${Math.round(Number(min))} ~ ${Math.round(Number(max))}`;
 }
+
 
 async function load(){
   const cities = document.getElementById("cities").value
